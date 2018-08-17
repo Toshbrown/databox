@@ -47,7 +47,7 @@ func main() {
 	arbiterImage := startCmd.String("arbiter", "databoxsystems/arbiter", "Override arbiter image")
 	coreNetworkImage := startCmd.String("core-network", "databoxsystems/core-network", "Override container-manager image")
 	coreNetworkRelay := startCmd.String("core-network-relay", "databoxsystems/core-network-relay", "Override core-network-relay image")
-	appServerImage := startCmd.String("app-server", "databoxsystems/app-server", "Override local app-server image")
+	appServerImage := startCmd.String("app-server", "databoxsystems/driver-app-store", "Override local manifest driver image")
 	exportServerImage := startCmd.String("export-service", "databoxsystems/export-service", "Override export-service image")
 	storeImage := startCmd.String("store", "databoxsystems/core-store", "Override core-store image")
 	clearSLAdb := startCmd.Bool("flushSLAs", false, "Removes any saved apps or drivers from the SLA database so they will not restart")
@@ -144,6 +144,7 @@ func main() {
 		}
 
 		Start(opts)
+		ShowLogs()
 	case "stop":
 		libDatabox.Info("Stoping Databox ...")
 		stopCmd.Parse(os.Args[2:])
@@ -349,8 +350,6 @@ func pullImage(image string, options *libDatabox.ContainerManagerOptions) {
 		//its in the default registry and has the :latest tag lets pull it to make sure we are up-to-date
 		needToPull = true
 	}
-
-	fmt.Println("Need to pull = ", needToPull)
 
 	if needToPull == true {
 		libDatabox.Info("Pulling Image " + image)
